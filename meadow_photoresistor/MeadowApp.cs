@@ -32,8 +32,8 @@ namespace meadow_photoresistor
         }
 
         // An optional `Predicate` that filters out any notifications that don't satisfy
-        //     (return `true`) the predicate condition. Note that the first reading will always
-        //     call the handler.
+        // (return `true`) the predicate condition. Note that the first reading will always
+        // call the handler.
         private static bool Filter(IChangeResult<Voltage> result)
         {
             // filter is optional. in this case, we're only notifying if the
