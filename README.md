@@ -1,6 +1,6 @@
 # meadow_photoresistor
 
-![GitHub Logo](Sketch_bb.png)
+![Fritizing Sketch Image](Sketch_bb.png)
 
 [9/11/2022 5:40:48 PM] Meadow StdOut: Initializing file system...
 [9/11/2022 5:40:49 PM] Meadow StdOut: File system initialized.
