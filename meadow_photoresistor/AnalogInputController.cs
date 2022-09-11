@@ -1,45 +1,51 @@
 ﻿using System;
-using System.Threading.Tasks;
-using System.Threading;
 
-using Meadow.Foundation.Leds;
-using Meadow.Foundation;
+using Meadow;
+using Meadow.Devices;
 using Meadow.Hardware;
+using Meadow.Units;
 
 namespace meadow_analoginput
 {
     internal class AnalogInputController
-    {
-        private readonly Random _random;       
-        private CancellationTokenSource _cancellationTokenSource = null;        
-
+    {              
         protected bool Initialized = false;        
-
-        public static AnalogInputController Current { get; private set; }
+        public static AnalogInputController Current { get; private set; }        
 
         private AnalogInputController()
-        {
-            _random = new Random();
+        {            
         }
 
         static AnalogInputController()
         {
-            Current = new AnalogInputController();
-        }
+            Current = new AnalogInputController();            
+        }        
 
-        public void Initialize(IPwmOutputController outputController, IPin redPwmPin, IPin greenPwmPin, IPin bluePwmPin)
+        public async void Initialize(
+            IMeadowDevice meadowDevice, 
+            IPin analogIntputPin, 
+            Action<IChangeResult<Voltage>> handler,
+            Predicate<IChangeResult<Voltage>> filter)
         {
             if (Initialized)
             {
                 return;
-            }          
-           
+            }
 
-            Initialized = true;
+            var observer = IAnalogInputPort.CreateObserver(
+                handler: handler,
+                filter: filter
+            );
 
-            
-        }
+            var analogIn = meadowDevice.CreateAnalogInputPort(analogIntputPin, 5, AnalogInputPort.DefaultSampleInterval, AnalogInputPort.DefaultReferenceVoltage);            
 
-        
+            analogIn.Subscribe(observer);
+
+            await analogIn.Read();
+
+            analogIn.StartUpdating(TimeSpan.FromSeconds(1));
+
+            Initialized = true;            
+        }        
     }
 }
